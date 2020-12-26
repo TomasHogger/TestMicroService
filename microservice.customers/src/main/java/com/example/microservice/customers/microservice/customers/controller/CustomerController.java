@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class CustomerController {
 
@@ -32,4 +34,11 @@ public class CustomerController {
                 new ResponseEntity<>(customer, HttpStatus.OK));
     }
 
+    @GetMapping("/get_customer_ids/{name}")
+    public ResponseEntity<?> getCustomerIdsByName(@PathVariable String name) {
+        List<Integer> customer = customerService.getCustomerIdsByName(name);
+        return (customer == null ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(customer, HttpStatus.OK));
+    }
 }

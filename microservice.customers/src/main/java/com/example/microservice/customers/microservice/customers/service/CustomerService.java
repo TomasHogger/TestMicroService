@@ -9,7 +9,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerService {
@@ -32,5 +34,10 @@ public class CustomerService {
     public CustomerResponseDto getCustomerById(Integer id) {
         Optional<Customer> customer = customerRepository.findById(id);
         return customer.map(value -> objectMapper.convertValue(value, CustomerResponseDto.class)).orElse(null);
+    }
+
+    public List<Integer> getCustomerIdsByName(String name) {
+        List<Integer> ids = customerRepository.findAllIdsByName(name);
+        return ids.isEmpty() ? null : ids;
     }
 }
