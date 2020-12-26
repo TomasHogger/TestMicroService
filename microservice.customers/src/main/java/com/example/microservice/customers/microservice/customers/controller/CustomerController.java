@@ -1,6 +1,7 @@
 package com.example.microservice.customers.microservice.customers.controller;
 
 import com.example.microservice.customers.microservice.customers.dto.request.CustomerRequestDto;
+import com.example.microservice.customers.microservice.customers.dto.response.CustomerResponseDto;
 import com.example.microservice.customers.microservice.customers.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,14 @@ public class CustomerController {
     public ResponseEntity<?> addCustomer(@RequestBody CustomerRequestDto customerRequestDto) {
         int id = customerService.saveCustomer(customerRequestDto);
         return new ResponseEntity<>(id, HttpStatus.OK);
+    }
+
+    @GetMapping("/get_customer/{id}")
+    public ResponseEntity<?> getCustomerById(@PathVariable Integer id) {
+        CustomerResponseDto customer = customerService.getCustomerById(id);
+        return (customer == null ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(customer, HttpStatus.OK));
     }
 
 }
