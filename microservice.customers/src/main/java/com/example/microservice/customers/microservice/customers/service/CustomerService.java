@@ -1,6 +1,6 @@
 package com.example.microservice.customers.microservice.customers.service;
 
-import com.example.microservice.customers.microservice.customers.dto.CustomerDto;
+import com.example.microservice.customers.microservice.customers.dto.request.CustomerRequestDto;
 import com.example.microservice.customers.microservice.customers.model.Customer;
 import com.example.microservice.customers.microservice.customers.repository.CustomerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,8 +18,8 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
-    public int saveCustomer(CustomerDto customerDto) {
-        Customer customer = objectMapper.convertValue(customerDto, Customer.class);
+    public int saveCustomer(CustomerRequestDto customerRequestDto) {
+        Customer customer = objectMapper.convertValue(customerRequestDto, Customer.class);
         customerRepository.save(customer);
         return customer.getId();
     }
