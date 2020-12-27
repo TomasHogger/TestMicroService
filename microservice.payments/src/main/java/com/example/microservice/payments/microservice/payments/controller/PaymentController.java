@@ -1,11 +1,14 @@
 package com.example.microservice.payments.microservice.payments.controller;
 
+import com.example.microservice.payments.microservice.payments.dto.request.PayRequestDto;
 import com.example.microservice.payments.microservice.payments.dto.request.PaymentRequestDto;
+import com.example.microservice.payments.microservice.payments.dto.response.PayResponseDto;
 import com.example.microservice.payments.microservice.payments.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +26,12 @@ public class PaymentController {
     public ResponseEntity<?> toInvoice(@RequestBody PaymentRequestDto paymentRequestDto) {
         Integer id = paymentService.createPayment(paymentRequestDto);
         return id == null ? new ResponseEntity<>(HttpStatus.BAD_REQUEST) : new ResponseEntity<>(id, HttpStatus.OK);
+    }
+
+    @PutMapping("/pay/")
+    public ResponseEntity<?> pay(@RequestBody PayRequestDto payRequestDto) {
+        PayResponseDto payResponseDto = paymentService.pay(payRequestDto);
+        return new ResponseEntity<>(payResponseDto, payResponseDto.isCorrectData() ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
 }
