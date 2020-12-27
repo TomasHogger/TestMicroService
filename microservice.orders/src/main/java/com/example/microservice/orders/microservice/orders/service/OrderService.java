@@ -55,6 +55,7 @@ public class OrderService {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent() && order.get().getStatus() == OrderStatus.CREATED) {
             orderRepository.deleteById(id);
+            paymentServiceProxy.deletePaymentByOrderId(id);
             return true;
         }
 
