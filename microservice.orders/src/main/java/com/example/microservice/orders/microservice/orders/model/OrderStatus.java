@@ -1,7 +1,8 @@
 package com.example.microservice.orders.microservice.orders.model;
 
-public enum  OrderStatus {
+public enum OrderStatus {
     CREATED,
-    PAID,
+    PART_PAID,
+    FULL_PAID,
     DELIVERED
 }

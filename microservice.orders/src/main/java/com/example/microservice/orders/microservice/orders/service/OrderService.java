@@ -93,13 +93,19 @@ public class OrderService {
             return false;
         }
 
-        if (updateOrderStatusDto.getStatus() == OrderStatus.PAID
+        if (updateOrderStatusDto.getStatus() == OrderStatus.PART_PAID
                 && orderOptional.get().getStatus() != OrderStatus.CREATED) {
             return false;
         }
 
+        if (updateOrderStatusDto.getStatus() == OrderStatus.FULL_PAID
+                && (orderOptional.get().getStatus() != OrderStatus.CREATED
+                    || orderOptional.get().getStatus() != OrderStatus.PART_PAID)) {
+            return false;
+        }
+
         if (updateOrderStatusDto.getStatus() == OrderStatus.DELIVERED
-                && orderOptional.get().getStatus() != OrderStatus.PAID) {
+                && orderOptional.get().getStatus() != OrderStatus.FULL_PAID) {
             return false;
         }
 
