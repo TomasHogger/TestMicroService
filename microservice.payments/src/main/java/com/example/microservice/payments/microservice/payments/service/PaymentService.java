@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PaymentService {
 
@@ -74,5 +76,20 @@ public class PaymentService {
             isCorrectData = false;
         }
         return new PayResponseDto(isCorrectData, payment.getFullAmount(), payment.getPaidAmount(), isFullyPaid);
+    }
+
+    public boolean deletePaymentByOrderId(Integer orderId) {
+        if (orderId == null || orderId < 0) {
+            return false;
+        }
+
+        Payment payment = paymentRepository.findByOrderId(orderId);
+
+        if (payment == null || payment.getPaidAmount() != 0) {
+            return false;
+        }
+
+        paymentRepository.delete(payment);
+        return true;
     }
 }
