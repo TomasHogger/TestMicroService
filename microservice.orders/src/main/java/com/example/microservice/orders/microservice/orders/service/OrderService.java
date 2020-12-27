@@ -101,7 +101,7 @@ public class OrderService {
 
         if (updateOrderStatusDto.getStatus() == OrderStatus.FULL_PAID
                 && (orderOptional.get().getStatus() != OrderStatus.CREATED
-                    || orderOptional.get().getStatus() != OrderStatus.PART_PAID)) {
+                    && orderOptional.get().getStatus() != OrderStatus.PART_PAID)) {
             return false;
         }
 
