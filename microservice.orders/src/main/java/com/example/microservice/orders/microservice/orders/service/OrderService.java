@@ -135,4 +135,11 @@ public class OrderService {
             return false;
         }
     }
+
+    public OrderRequestDto getOrderById(Integer id) {
+        Optional<Order> order = orderRepository.findById(id);
+        return order.isPresent() ?
+                objectMapper.convertValue(order, OrderRequestDto.class) :
+                null;
+    }
 }

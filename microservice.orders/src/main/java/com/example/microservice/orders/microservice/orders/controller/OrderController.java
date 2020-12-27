@@ -19,6 +19,14 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @GetMapping("/get_order/{id}")
+    public ResponseEntity<?> getOrderById(@PathVariable Integer id) {
+        OrderRequestDto orderRequestDto = orderService.getOrderById(id);
+        return (orderRequestDto == null ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(orderRequestDto, HttpStatus.OK));
+    }
+
     @PostMapping("/add_order/")
     public ResponseEntity<?> addOrder(@RequestBody OrderRequestDto orderRequestDto) {
         Integer id = orderService.addOrder(orderRequestDto);
