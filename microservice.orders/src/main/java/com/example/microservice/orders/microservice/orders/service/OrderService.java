@@ -13,6 +13,8 @@ import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class OrderService {
 
@@ -62,5 +64,15 @@ public class OrderService {
         } catch (FeignException.NotFound e) {
             return false;
         }
+    }
+
+    public boolean deleteOrder(Integer id) {
+        Optional<Order> order = orderRepository.findById(id);
+        if (order.isPresent() && order.get().getStatus() == OrderStatus.CREATED) {
+            orderRepository.deleteById(id);
+            return true;
+        }
+
+        return false;
     }
 }
