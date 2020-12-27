@@ -3,16 +3,17 @@ package com.example.microservice.orders.microservice.orders.service;
 import com.example.microservice.orders.microservice.orders.dto.request.OrderRequestDto;
 import com.example.microservice.orders.microservice.orders.dto.request.OrderRequestWthIdDto;
 import com.example.microservice.orders.microservice.orders.dto.request.PaymentRequestDto;
+import com.example.microservice.orders.microservice.orders.dto.request.UpdateOrderStatusDto;
 import com.example.microservice.orders.microservice.orders.model.Order;
 import com.example.microservice.orders.microservice.orders.model.OrderStatus;
 import com.example.microservice.orders.microservice.orders.proxy.CustomerServiceProxy;
 import com.example.microservice.orders.microservice.orders.proxy.PaymentServiceProxy;
 import com.example.microservice.orders.microservice.orders.repository.OrderRepository;
+import com.example.microservice.orders.microservice.orders.utils.Validation;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -77,20 +78,46 @@ public class OrderService {
         return true;
     }
 
+    public boolean updateOrderStatus(UpdateOrderStatusDto updateOrderStatusDto) {
+        if (!Validation.isPositiveOrZeroNumber(updateOrderStatusDto.getId())) {
+            return false;
+        }
+
+        Optional<Order> orderOptional = orderRepository.findById(updateOrderStatusDto.getId());
+
+        if (orderOptional.isEmpty()) {
+            return false;
+        }
+
+        if (updateOrderStatusDto.getStatus() == orderOptional.get().getStatus()) {
+            return false;
+        }
+
+        if (updateOrderStatusDto.getStatus() == OrderStatus.PAID
+                && orderOptional.get().getStatus() != OrderStatus.CREATED) {
+            return false;
+        }
+
+        if (updateOrderStatusDto.getStatus() == OrderStatus.DELIVERED
+                && orderOptional.get().getStatus() != OrderStatus.PAID) {
+            return false;
+        }
+
+        Order order = orderOptional.get();
+        order.setStatus(updateOrderStatusDto.getStatus());
+        orderRepository.save(order);
+        return true;
+    }
+
     private boolean isOrderRequestWithIdDtoCorrect(OrderRequestWthIdDto orderRequestWthIdDto) {
-        return orderRequestWthIdDto.getId() != null
-                && orderRequestWthIdDto.getId() >= 0
-                && orderRequestWthIdDto.getDescription() != null
-                && !orderRequestWthIdDto.getDescription().isEmpty();
+        return Validation.isPositiveOrZeroNumber(orderRequestWthIdDto.getId())
+                && Validation.isFullString(orderRequestWthIdDto.getDescription());
     }
 
     private boolean isOrderRequestDtoCorrect(OrderRequestDto orderRequestDto) {
-        return orderRequestDto.getCustomerId() != null
-                && orderRequestDto.getCustomerId() >= 0
-                && orderRequestDto.getDescription() != null
-                && !orderRequestDto.getDescription().isEmpty()
-                && orderRequestDto.getFullAmount() != null
-                && orderRequestDto.getFullAmount() > 0;
+        return Validation.isPositiveOrZeroNumber(orderRequestDto.getCustomerId())
+                && Validation.isFullString(orderRequestDto.getDescription())
+                && Validation.isPositiveNumber(orderRequestDto.getFullAmount());
     }
 
     private boolean isCustomerExists(int customerId) {

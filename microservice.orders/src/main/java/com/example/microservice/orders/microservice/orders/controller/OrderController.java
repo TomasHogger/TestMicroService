@@ -2,6 +2,7 @@ package com.example.microservice.orders.microservice.orders.controller;
 
 import com.example.microservice.orders.microservice.orders.dto.request.OrderRequestDto;
 import com.example.microservice.orders.microservice.orders.dto.request.OrderRequestWthIdDto;
+import com.example.microservice.orders.microservice.orders.dto.request.UpdateOrderStatusDto;
 import com.example.microservice.orders.microservice.orders.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,13 @@ public class OrderController {
     @PutMapping("/change_order/")
     public ResponseEntity<?> changeOrder(@RequestBody OrderRequestWthIdDto orderRequestWthIdDto) {
         return orderService.changeOrder(orderRequestWthIdDto) ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/update_order_status/")
+    public ResponseEntity<?> updateOrderStatus(@RequestBody UpdateOrderStatusDto updateOrderStatusDto) {
+        return orderService.updateOrderStatus(updateOrderStatusDto) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
