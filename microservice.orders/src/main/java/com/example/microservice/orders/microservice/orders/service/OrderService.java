@@ -138,8 +138,6 @@ public class OrderService {
 
     public OrderRequestDto getOrderById(Integer id) {
         Optional<Order> order = orderRepository.findById(id);
-        return order.isPresent() ?
-                objectMapper.convertValue(order, OrderRequestDto.class) :
-                null;
+        return order.map(value -> objectMapper.convertValue(value, OrderRequestDto.class)).orElse(null);
     }
 }
