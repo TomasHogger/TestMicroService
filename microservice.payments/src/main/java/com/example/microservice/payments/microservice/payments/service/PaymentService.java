@@ -64,11 +64,14 @@ public class PaymentService {
                 && !isFullyPaid
                 && payment.getPaidAmount() + payRequestDto.getAmount() <= payment.getFullAmount()) {
 
+            Long beforePay = payment.getPaidAmount();
             payment.setPaidAmount(payment.getPaidAmount() + payRequestDto.getAmount());
 
             if (payment.getPaidAmount().equals(payment.getFullAmount())) {
-                orderServiceProxy.updateOrderStatus(new UpdateOrderStatusDto(payment.getId(), OrderStatus.PAID));
+                orderServiceProxy.updateOrderStatus(new UpdateOrderStatusDto(payment.getId(), OrderStatus.FULL_PAID));
                 isFullyPaid = true;
+            } else if (beforePay == 0) {
+                orderServiceProxy.updateOrderStatus(new UpdateOrderStatusDto(payment.getId(), OrderStatus.PART_PAID));
             }
 
             paymentRepository.save(payment);
