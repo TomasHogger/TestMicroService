@@ -24,7 +24,7 @@ public class OrderController {
         return id == null ? new ResponseEntity<>(HttpStatus.BAD_REQUEST) : new ResponseEntity<>(id, HttpStatus.OK);
     }
 
-    @DeleteMapping("delete_order/{id}")
+    @DeleteMapping("/delete_order/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable Integer id) {
         return orderService.deleteOrder(id) ?
                 new ResponseEntity<>(HttpStatus.OK) :
