@@ -4,6 +4,7 @@ import com.example.microservice.orders.microservice.orders.dto.request.OrderRequ
 import com.example.microservice.orders.microservice.orders.dto.request.OrderRequestWthIdDto;
 import com.example.microservice.orders.microservice.orders.dto.request.PaymentRequestDto;
 import com.example.microservice.orders.microservice.orders.dto.request.UpdateOrderStatusDto;
+import com.example.microservice.orders.microservice.orders.dto.response.OrderResponseDto;
 import com.example.microservice.orders.microservice.orders.model.Order;
 import com.example.microservice.orders.microservice.orders.model.OrderStatus;
 import com.example.microservice.orders.microservice.orders.proxy.CustomerServiceProxy;
@@ -136,8 +137,8 @@ public class OrderService {
         }
     }
 
-    public OrderRequestDto getOrderById(Integer id) {
+    public OrderResponseDto getOrderById(Integer id) {
         Optional<Order> order = orderRepository.findById(id);
-        return order.map(value -> objectMapper.convertValue(value, OrderRequestDto.class)).orElse(null);
+        return order.map(value -> objectMapper.convertValue(value, OrderResponseDto.class)).orElse(null);
     }
 }

@@ -3,6 +3,7 @@ package com.example.microservice.orders.microservice.orders.controller;
 import com.example.microservice.orders.microservice.orders.dto.request.OrderRequestDto;
 import com.example.microservice.orders.microservice.orders.dto.request.OrderRequestWthIdDto;
 import com.example.microservice.orders.microservice.orders.dto.request.UpdateOrderStatusDto;
+import com.example.microservice.orders.microservice.orders.dto.response.OrderResponseDto;
 import com.example.microservice.orders.microservice.orders.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class OrderController {
 
     @GetMapping("/get_order/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable Integer id) {
-        OrderRequestDto orderRequestDto = orderService.getOrderById(id);
+        OrderResponseDto orderRequestDto = orderService.getOrderById(id);
         return (orderRequestDto == null ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(orderRequestDto, HttpStatus.OK));
