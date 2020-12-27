@@ -48,6 +48,16 @@ public class OrderService {
         return order.getId();
     }
 
+    public boolean deleteOrder(Integer id) {
+        Optional<Order> order = orderRepository.findById(id);
+        if (order.isPresent() && order.get().getStatus() == OrderStatus.CREATED) {
+            orderRepository.deleteById(id);
+            return true;
+        }
+
+        return false;
+    }
+
     private boolean isOrderRequestDtoCorrect(OrderRequestDto orderRequestDto) {
         return orderRequestDto.getCustomerId() != null
                 && orderRequestDto.getCustomerId() >= 0
@@ -64,15 +74,5 @@ public class OrderService {
         } catch (FeignException.NotFound e) {
             return false;
         }
-    }
-
-    public boolean deleteOrder(Integer id) {
-        Optional<Order> order = orderRepository.findById(id);
-        if (order.isPresent() && order.get().getStatus() == OrderStatus.CREATED) {
-            orderRepository.deleteById(id);
-            return true;
-        }
-
-        return false;
     }
 }
