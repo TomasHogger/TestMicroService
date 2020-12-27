@@ -1,6 +1,7 @@
 package com.example.microservice.orders.microservice.orders.service;
 
 import com.example.microservice.orders.microservice.orders.dto.request.OrderRequestDto;
+import com.example.microservice.orders.microservice.orders.dto.request.OrderRequestWthIdDto;
 import com.example.microservice.orders.microservice.orders.dto.request.PaymentRequestDto;
 import com.example.microservice.orders.microservice.orders.model.Order;
 import com.example.microservice.orders.microservice.orders.model.OrderStatus;
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -56,6 +58,30 @@ public class OrderService {
         }
 
         return false;
+    }
+
+    public boolean changeOrder(OrderRequestWthIdDto orderRequestWthIdDto) {
+        if (!isOrderRequestWithIdDtoCorrect(orderRequestWthIdDto)) {
+            return false;
+        }
+
+        Optional<Order> orderOptional = orderRepository.findById(orderRequestWthIdDto.getId());
+
+        if (orderOptional.isEmpty() || orderOptional.get().getStatus() != OrderStatus.CREATED) {
+            return false;
+        }
+
+        Order order = orderOptional.get();
+        order.setDescription(orderRequestWthIdDto.getDescription());
+        orderRepository.save(order);
+        return true;
+    }
+
+    private boolean isOrderRequestWithIdDtoCorrect(OrderRequestWthIdDto orderRequestWthIdDto) {
+        return orderRequestWthIdDto.getId() != null
+                && orderRequestWthIdDto.getId() >= 0
+                && orderRequestWthIdDto.getDescription() != null
+                && !orderRequestWthIdDto.getDescription().isEmpty();
     }
 
     private boolean isOrderRequestDtoCorrect(OrderRequestDto orderRequestDto) {
